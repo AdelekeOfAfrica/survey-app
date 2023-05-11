@@ -5,7 +5,7 @@
           <div class="flex h-16 items-center justify-between">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <img class="h-8 w-8" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
+                <img class="h-8 w-8" src="https://images-platform.99static.com//XcssfvWR2gfPPXTHR9eL3mDSwvs=/0x0:2000x2000/fit-in/500x500/99designs-contests-attachments/113/113069/attachment_113069299" alt="Your Company" />
               </div>
               <div class="hidden md:block">
                 <div class="ml-10 flex items-baseline space-x-4">
@@ -34,7 +34,9 @@
                   <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                     <MenuItems class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                        <MenuItem v-slot="{ active }"> <!--this section is for dropdownmenu -->
-                        <a @click="logout" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer']">Signout</a>
+                        <template>
+                        <a :aria-disabled="active" :disabled="active" @click.prevent="logout" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer']">Signout</a>
+                        </template>
                       </MenuItem>
                     </MenuItems>
                   </transition>
@@ -75,7 +77,7 @@
               </div>
             </div>
             <div class="mt-3 space-y-1 px-2">
-              <DisclosureButton  as="a" @click="logout" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white cursor-pointer">Sign out </DisclosureButton>
+              <DisclosureButton  as="a" @click.prevent="logout" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white cursor-pointer">Sign out </DisclosureButton>
             </div>
           </div>
         </DisclosurePanel>
