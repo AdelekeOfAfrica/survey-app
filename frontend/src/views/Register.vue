@@ -9,23 +9,26 @@
           <p class="font-medium text-indigo-600 hover:text-indigo-500 ml-9">You are one step away from starting your survey.</p>
         </p>
       </div>
-      <form class="mt-8 space-y-6">
+      <form class="mt-8 space-y-6" @submit.prevent="register"> <!--register function is available in the script function-->
         <input type="hidden" name="remember" value="true">
         <div class="rounded-md shadow-sm -space-y-px">
             <div>
             <label for="Name" class="sr-only">Name</label>
-            <input id="name" name="name" type="text" autocomplete="text" required  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Name">
+            <input id="name" name="name" type="text" autocomplete="text" v-model="user.name" required  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Name">
           </div>
           <div>
             <label for="email-address" class="sr-only">Email address</label>
-            <input id="email-address" name="email" type="email" autocomplete="email" required  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email address">
+            <input id="email-address" name="email" type="email" autocomplete="email" v-model="user.email" required  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email address">
           </div>
           <div>
             <label for="password" class="sr-only">Password</label> 
-            <input id="password" name="password" type="password" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password" />
+            <input id="password" name="password" type="password" v-model="user.password" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password" />
+          </div>
+          <div>
+            <label for="password_confirmation" class="sr-only">password_confirmation</label> 
+            <input id="password_confirmation" name="password_confirmation" v-model ="user.password_confirmation" type="password" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password_confirmation" />
           </div>
         </div>
-  
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
@@ -51,8 +54,31 @@
   </div>
 </template>
 
-<script >
- export default{
-    name: 'Register'
- }
+<script setup>
+
+  import store from '../store';
+import {useRouter} from "vue-router"
+const router =  useRouter();
+const user =
+{
+  name:'',
+  email:'',
+  password:'',
+  password_confirmation:'',
+
+};
+function register(ev){
+  ev.preventDefault();
+
+  store
+  .dispatch('register',user) //this is to send the user details to the store.actions
+  .then( (res) => {  //this is to check for response in the browser console 
+    router.push({
+        name:'Dashboard'
+    })
+  })
+
+
+
+}
 </script>

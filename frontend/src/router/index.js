@@ -5,7 +5,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Surveys from '../views/Surveys.vue'
-import store from '../store /index.js'
+import store from '../store/index.js'
 
 const routes = [
     {
