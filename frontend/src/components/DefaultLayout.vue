@@ -92,6 +92,7 @@
   import {useStore} from 'vuex'
   import {computed} from 'vue'
   import {useRouter} from 'vue-router'
+
   
 
   const navigation = [
@@ -118,11 +119,14 @@
        const router = useRouter(); //this is used for redirection
 
         function logout() {
-          store.commit('logout') //this is going into the store to check the mutations
-          router.push({
+          store.dispatch('logout') //this is going into the store to check the mutations
+          .then(()=>{
+            router.push({
             name:'Login'
 
           })
+          })
+         
         }
       return {
         user: computed(()=>store.state.user.data),
