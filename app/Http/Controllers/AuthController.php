@@ -37,4 +37,32 @@ class AuthController extends Controller
         ]);
     }
 
+    public function login(Request $request)
+    {
+        $credencials = $request->validate([
+            'email'=>'required|email|string|exists:users,email',
+            'password'=>['required'
+        ],
+            'remember'=>'boolean'
+        ]);
+
+        $remember = $credencials['remember'] ?? false;
+        unset($credencials['remember']);
+
+        if (!Auth::attempt($credencials, $remember)){
+            return  response([
+                'error'=>'The Provided Credencials Are not correct'
+            ],422);
+        }
+
+        $user = Auth::user();
+        $token = $user->createToken('main')->plainTextToken;
+
+        return response([
+            'user' =>$user,
+            'token' =>$token,
+            
+        ]);
+    }
+
 }
