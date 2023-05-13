@@ -82,7 +82,7 @@
           </div>
         </DisclosurePanel>
       </Disclosure>
-       <router-view></router-view>  <!--this router is fetching content of the router  -->
+       <router-view></router-view>  <!--this router is fetching content of the whole page underneath the header to the router  -->
     </div>
   </template>
   
