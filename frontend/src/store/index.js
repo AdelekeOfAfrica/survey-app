@@ -1,60 +1,84 @@
 import { createStore } from "vuex";
 import axiosClient from "../views/axios";
 
-const tmpSurveys =[
+const tmpSurveys = [
     {
-        id:1000,
-        title:"michael adeleke channel",
-        slug:"michaek-adeleke-channel",
+        id:100,
+        title:"basic life survey ",
+        slug:"basic-life-survey",
         status:"draft",
-        image:"https://www.google.com/imgres?imgurl=https%3A%2F%2Fwww.voxco.com%2Fwp-content%2Fuploads%2F2021%2F04%2Fstudents-feedback-survey-cvr.jpg&tbnid=fWibG_-20__LOM&vet=12ahUKEwjQhqzyxfD-AhUWmycCHdgeDFcQMygBegUIARDgAQ..i&imgrefurl=https%3A%2F%2Fwww.voxco.com%2Fblog%2Fstudent-survey%2F&docid=txOCa__RmKdTDM&w=1200&h=628&q=survey&ved=2ahUKEwjQhqzyxfD-AhUWmycCHdgeDFcQMygBegUIARDgAQ",
-        description:"testing this for the first time",
-        created_at:"22-01-20, 15:00:00",
-        updated_at:"22-01-20, 15:00:00",
-        expire_at:"22-01-22,15:00:0)",
+        image:"https://www.shutterstock.com/image-vector/your-opinion-matters-symbol-survey-260nw-1937069089.jpg",
+        description:"Basic Life Support, or BLS, generally refers to the type of care that first-responders, healthcare providers and public safety professionals provide to anyone who is experiencing cardiac arrest, respiratory distress or an obstructed airway. It requires knowledge and skills in cardiopulmonary resuscitation (CPR), using automated external defibrillators (AED) and relieving airway obstructions in patients of every age.",
+        create_at:"2021-02-12 18:00:00",
+        updated_at:"2021-02-12 18:00:00",
+        expiry_date:"2021-02-12 18:00:00",
         questions:[
             {
-                id:1,
-                type:"select",
-                question:"from which country are you taking this surve from",
-                description:null,
-                data:{
-                    options:[
-                        {uudi:"fnwfkffnf222",text:"usa"},
-                        {uudi:"fnwfkffnf222",text:"africa"},
-                        {uudi:"fnwfkffnf222",text:"nigeria"},
-                    ],
-                },
+            id:1,
+            type:"select",
+            question:"which country are you from",
+            description:"by the special grace of God these development stuff i go sabi am pah ",
+            data:{
+                options:[
+                    {uuid:"f8af96f2-1d80-4632-9e9e-b560670e52ea", text:"USA"},
+                    {uuid:"r8af96u2-1z20-4682-9e7e-2560670egg6a", text:"georia"},
+                ],
             },
-            {
-                id:2,
-                type:"checkbbox",
-                question:"which code do you like most",
-                description:null,
-                data:{
-                    options:[
-                        {uudi:"fnwfkffnf222",text:"php"},
-                        {uudi:"fnwfkffnf222",text:"java"},
-                        {uudi:"fnwfkffnf222",text:"python"},
-                    ],
-                },
-            },
-            {
-                id:3,
-                type:"select",
-                question:"from which country are you taking this surve from",
-                description:null,
-                data:{
-                    options:[
-                        {uudi:"fnwfkffnf222",text:"usa"},
-                        {uudi:"fnwfkffnf222",text:"africa"},
-                        {uudi:"fnwfkffnf222",text:"nigeria"},
-                    ],
-                },
-            }
-        ],
+        },
 
+        {
+            id:2,
+            type:"checkbox",
+            question:"which programming language can you use",
+            description:"by the special grace of God these development stuff i go sabi am pah ",
+            data:{
+                options:[
+                    {uuid:"f8af96f2-1d80-4632-9e9e-b560670e52ea", text:"php"},
+                    {uuid:"r8af96u2-1z20-4682-9e7e-2560670egg6a", text:"javascript"},
+                ],
+            },
+        }
+    ],
+    },
+    {
+        id:200,
+        title:"healthcare Assistant training ",
+        slug:"healthcare-assistant-training",
+        status:"draft",
+        image:"https://media.istockphoto.com/id/1326067203/photo/survey-message-and-megaphone.jpg?b=1&s=170667a&w=0&k=20&c=RF6ZwXYxsUXYnP5Zq8Eg1IMNrkk-fKluz4bzs2PZ9kU=",
+        description:"Healthcare assistants make sure the patient experience is as comfortable and stress-free as possible. It can also be the stepping stone into many other NHS roles. ",
+        create_at:"2021-02-12 18:00:00",
+        updated_at:"2021-02-12 18:00:00",
+        expiry_date:"2021-02-12 18:00:00",
+        questions:[
+            {
+            id:1,
+            type:"select",
+            question:"which country are you from",
+            description:"by the special grace of God these development stuff i go sabi am pah ",
+            data:{
+                options:[
+                    {uuid:"f8af96f2-1d80-4632-9e9e-b560670e52ea", text:"USA"},
+                    {uuid:"r8af96u2-1z20-4682-9e7e-2560670egg6a", text:"georia"},
+                ],
+            },
+        },
+
+        {
+            id:2,
+            type:"checkbox",
+            question:"which programming language can you use",
+            description:"by the special grace of God these development stuff i go sabi am pah ",
+            data:{
+                options:[
+                    {uuid:"f8af96f2-1d80-4632-9e9e-b560670e52ea", text:"php"},
+                    {uuid:"r8af96u2-1z20-4682-9e7e-2560670egg6a", text:"javascript"},
+                ],
+            },
+        }
+    ],
     }
+
 ];
 
 const store = createStore({
@@ -62,9 +86,10 @@ const store = createStore({
         user:{
             data:{},
             token:sessionStorage.getItem('TOKEN') //token will be saved in a session storage and we wont be logged out 
-        }
+        },
+        surveys:[...tmpSurveys],
+        questionTypes:["text","select","radio","checkbox","textarea"],
     },
-    survey:[...tmpSurveys],
     getters:{},
     actions:{
         
