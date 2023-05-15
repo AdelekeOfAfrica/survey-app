@@ -76,8 +76,8 @@ function login(ev){
    ev.preventDefault()
 
    store
-  .dispatch('login',user) //this is to send the user details to the store.actions
-  .then( () => {  //this is to check for response in the browser console 
+  .dispatch('login',user) 
+  .then( () => {  
     router.push({
         name:'Dashboard'
     })

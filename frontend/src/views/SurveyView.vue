@@ -109,10 +109,12 @@ import {v4 as uuidv4} from "uuid"
 import PageComponent from '../components/PageComponent.vue'
 import QuestionEditor from '../components/editor/QuestionEditor.vue'
 import store from '../store'
-import {useRoute} from 'vue-router'
+import {useRouter, useRoute} from 'vue-router'
 import {ref} from 'vue'
 
+const router= useRouter()
 const route = useRoute()
+
 let model = ref({
     title:"",
     status:false,
@@ -140,11 +142,31 @@ function addQuestion(index){
 
     model.value.questions.splice(index, 0, newQuestion)
 }
-//delete question
+//delete question, please note that question is the one passed to the questionEditor
 function deleteQuestion(question){
     model.value.questions = model.value.questions.filter(
         (q) => q !==question
     )
+}
+
+//the purpose  of this function is to pass change topic if necessary
+function questionChange(question){
+    model.value.questions = model.value.questions.map((q) =>{
+        if(q.id === question.id) {
+            return JSON.parse(Json.stringify(question))
+        }
+        return q
+    })
+}
+
+function saveSurvey() {
+    store.dispatch('saveSurvey', model.value).then(({ data }) => {
+    router.push({
+        name:"SurveyView",
+        params:{id: data.data.id},
+
+    })
+    }) //model.value is what we are using to search for our survey, data is what is being fetched
 }
 
 
