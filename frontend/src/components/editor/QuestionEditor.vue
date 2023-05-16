@@ -211,7 +211,7 @@
 </template>
 
 <script setup>
-import {ref,computed, defineEmits} from 'vue'
+import {ref,computed} from 'vue'
 import {v4 as uuidv4} from "uuid"
 import store from '../../store'
 

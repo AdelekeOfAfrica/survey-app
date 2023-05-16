@@ -110,7 +110,7 @@ import PageComponent from '../components/PageComponent.vue'
 import QuestionEditor from '../components/editor/QuestionEditor.vue'
 import store from '../store'
 import {useRouter, useRoute} from 'vue-router'
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 
 const router= useRouter()
 const route = useRoute()
@@ -124,11 +124,22 @@ let model = ref({
     questions:[]
 
 })
+
+//watch current survery data change  when it happens in the local
+watch(
+  () => store.state.currentSurvey.data,
+  (newVal, oldVal) => {
+    
+    model.value = {
+      ...JSON.parse(JSON.stringify(newVal)),
+      status: newVal.status !== "draft",
+    }
+  }
+)
+
 //the function below is to find the survey id that matched the one in surveys
 if(route.params.id) {
-    model.value = store.state.surveys.find(
-        (s) =>s.id ===parseInt(route.params.id)
-    )
+    store.dispatch('getSurvey', route.params.id) //this is to get the particular survey we are looking for 
 }
 
 function onImageChoose(ev) {

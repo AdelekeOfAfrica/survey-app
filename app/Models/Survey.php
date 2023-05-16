@@ -23,7 +23,7 @@ class Survey extends Model
     }
 
     public function getRouteKeyName(){
-        return 'slug';
+        return 'id'; //you can change it to slug if you want to be getting your data through slug
     }
 
 

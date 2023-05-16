@@ -39,10 +39,7 @@ class SurveyController extends Controller
 
         }
 
-
         $survey =  Survey::Create($data);
-
-       
 
        return new SurveyResource($survey);
     }
@@ -51,27 +48,51 @@ class SurveyController extends Controller
      * Display the specified resource.
      * please note , you are using the slug to fetch the details 
      */
-    public function show(Survey $survey, Request $request)
+    public function show($id, Request $request)
     {
-        //
         $user = $request->user();
-       
-        if($user->id !== $survey->user_id){
-            return abort(403 ,'unauthorized action');
+        
+        // Fetch survey by ID
+        $survey = Survey::find($id);
+    
+        if (!$survey) {
+            return abort(404, 'Survey not found');
         }
+    
+        // Check if the authenticated user is the owner of the survey
+        if ($user->id !== $survey->user_id) {
+            return abort(403, 'Unauthorized action');
+        }
+    
         return new SurveyResource($survey);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSurveyRequest $request, Survey $survey)
+    public function update(UpdateSurveyRequest $request, $id)
     {
-        //
-        $survey->update($request->validated());
-
+        $survey = Survey::findOrFail($id);
+    
+        $data = $request->validated();
+    
+        if (isset($data['image'])) {
+            $relativePath = $this->saveImage($data['image']);
+            $data['image'] = $relativePath;
+    
+            if ($survey->image) {
+                $absolutePath = public_path($survey->image);
+                File::delete($absolutePath);
+            }
+        }
+    
+        $survey->update($data);
+    
         return new SurveyResource($survey);
     }
+    
+    
+
 
     /**
      * Remove the specified resource from storage.
