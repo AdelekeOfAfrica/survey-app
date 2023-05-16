@@ -29,7 +29,7 @@
          bg-white
         hover:bg-gray-100
         h-[470px]">
-        <img :src="survey.image" alt="image" class="w-full h-48 object-cover" />
+        <img :src="survey.image_url" alt="image" class="w-full h-48 object-cover" />
         <h4 class="mt-4 text-lg font-bold">{{ survey.title }}</h4>
         <div v-html="survey.description" class="overflow-hidden flex-1"></div>
         <!--edit button-->
@@ -85,7 +85,9 @@ import store from '../store/index.js'
 import {computed} from 'vue'
 import PageComponent from '../components/PageComponent.vue'
  
-const surveys = computed (()=> store.state.surveys)
+const surveys = computed (()=> store.state.surveys.data)
+
+store.dispatch('getSurveys')
 
 function deleteSurvey(survey){}
 if(confirm("do you want to really delete this survey")) {
