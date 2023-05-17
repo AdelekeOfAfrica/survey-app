@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Users;
 use App\Models\Survey;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\SurveyQuestion;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
 use App\Http\Resources\SurveyResource;
 use App\Http\Requests\StoreSurveyRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UpdateSurveyRequest;
 
@@ -98,7 +99,37 @@ class SurveyController extends Controller
         }
     
         $survey->update($data);
-    
+
+        //get ids as plain array of existing questions
+        $existingIds = $survey->questions()->pluck('id')->toArray();
+        //get ids as plain array to new questions
+        $newIds = Arr::pluck($data['questions'],'id');
+        //find question to delete 
+        $toDelete = array_diff($existingIds,$newIds);
+
+        //find questions to add 
+        $toAdd = array_diff($newIds,$existingIds);
+
+        //delete question by $toDelete Array 
+        SurveyQuestion::destroy($toDelete);
+
+        //create a new Question 
+        foreach($data['questions'] as $question){
+            if(in_array($question['id'], $toAdd)){
+                $question['survey_id'] = $survey->id;
+                $this->createQuestion($question);
+
+            }
+        }
+
+
+        //update existing questions
+        $questionMap = collect($data['questions'])->keyBy('id');
+        foreach ($survey->questions as $question){
+            if(isset($questionMap[$question->id])) {
+                $this->updateQuestion($question, $questionMap[$question->id]);
+            }
+        }
         return new SurveyResource($survey);
     }
     
@@ -166,7 +197,7 @@ class SurveyController extends Controller
 
     public function createQuestion($data){
         if (is_array($data['data'])) {
-            $data['data'] = json_encode($data['data']);
+            $data['data'] = json_encode($data['data']); //check if data is present 
         }
     
         $validator = Validator::make($data, [
@@ -188,6 +219,31 @@ class SurveyController extends Controller
         }
     
         return SurveyQuestion::create($validator->validated());
+    }
+
+    public function updateQuestion(SurveyQuestion $question, $data)
+    {
+        //check if data is present 
+        if (is_array($data['data'])) {
+            $data['data'] = json_encode($data['data']);
+        }
+
+        $validator = validator::make($data,[
+            'id'=> 'exists:App\Models\SurveyQuestion,id',
+            'question'=>'required|string',
+            'type'=>['required',Rule::in([
+                Survey::TYPE_TEXT,
+                Survey::TYPE_TEXTAREA,
+                Survey::TYPE_SELECT,
+                Survey::TYPE_RADIO,
+                Survey::TYPE_CHECKBOX,
+            ])],
+            'description' => 'nullable|string',
+            'data' => 'nullable',
+        ]);
+
+        return $question->update($validator->validated());
+        
     }
     
 }
