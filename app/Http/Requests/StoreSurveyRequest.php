@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Survey;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreSurveyRequest extends FormRequest
 {
@@ -34,7 +38,9 @@ class StoreSurveyRequest extends FormRequest
             'image' =>'nullable|string',
             'status'=>'required|boolean',
             'description'=>'nullable|string',
-            'expiry_date'=>'nullable|date|after:tomorrow'
+            'expiry_date'=>'nullable|date|after:tomorrow',
+            'questions'=>'array'
+           
         ];
     }
 }

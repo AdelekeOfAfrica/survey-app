@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Survey;
-use Auth;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSurveyRequest extends FormRequest
@@ -33,7 +35,7 @@ class UpdateSurveyRequest extends FormRequest
             'status'=>'required|boolean',
             'description'=>'nullable|string',
             'expiry_date'=>'nullable|date|after:tomorrow',
-           
+             'questions'=>'array'
         ];
     }
 }

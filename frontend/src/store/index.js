@@ -99,7 +99,7 @@ const store = createStore({
             state.currentSurvey.loading = loading
 
         },
-        setCurrentSurveysLoading:(state,loading) =>{
+        setSurveysLoading:(state,loading) =>{
             state.surveys.loading = loading
 
         },

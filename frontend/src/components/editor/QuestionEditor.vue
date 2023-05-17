@@ -49,7 +49,7 @@
     <div class="grid gap-3 grid-cols-12">
         <!-- question -->
         <div class="mt-3 col-span-9">
-            <label :for="'question_text_' + model_data" class=
+            <label :for="'question_text_' + model.data" class=
             "block
             text-sm
             font-medium
@@ -57,10 +57,10 @@
             ">Question Text
             </label>
 
-            <input type="text" :name="'question_text_' + model_data"
+            <input type="text" :name="'question_text_' + model.data"
             v-model="model.question"
             @change="dataChange"
-            :id="'question_text_' +model_data"
+            :id="'question_text_' + model.data"
             class=
             "mt-1
             focus:ring-indigo-500
@@ -108,7 +108,7 @@
                 </option>
             </select>
         </div>
-        <!--end of question type -->
+        <!-- end of question type -->
     </div>
 
     <!--Question description-->
@@ -212,7 +212,7 @@
 
 <script setup>
 import {ref,computed} from 'vue'
-import {v4 as uuidv4} from "uuid"
+import { v4 as uuidv4 } from "uuid"
 import store from '../../store'
 
 
@@ -271,7 +271,7 @@ function typeChange(){
 
 //Emit the data change 
 function dataChange() {
-    const data = Json.parse(Json.strigify(model.value))
+    const data = JSON.parse(JSON.stringify(model.value))
     if(!shouldHaveOptions()) {
         delete data.data.options
     }

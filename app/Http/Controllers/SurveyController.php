@@ -7,9 +7,12 @@ use App\Models\Users;
 use App\Models\Survey;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\SurveyQuestion;
 use Illuminate\Support\Facades\File;
 use App\Http\Resources\SurveyResource;
 use App\Http\Requests\StoreSurveyRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UpdateSurveyRequest;
 
 class SurveyController extends Controller
@@ -32,6 +35,7 @@ class SurveyController extends Controller
     {
         //
         $data = $request ->validated();
+      
 
         if(isset($data['image'])){
             $relativePath = $this->saveImage($data['image']); //saveimage is a function scroll down
@@ -40,6 +44,13 @@ class SurveyController extends Controller
         }
 
         $survey =  Survey::Create($data);
+        
+       // create a new Question
+        foreach($data['questions'] as $question){
+
+            $question['survey_id'] = $survey->id;
+            $this->createQuestion($question);
+        }
 
        return new SurveyResource($survey);
     }
@@ -152,4 +163,31 @@ class SurveyController extends Controller
 
         return $relativePath;
     }
+
+    public function createQuestion($data){
+        if (is_array($data['data'])) {
+            $data['data'] = json_encode($data['data']);
+        }
+    
+        $validator = Validator::make($data, [
+            'question' => 'required|string',
+            'type' => ['required', Rule::in([
+                Survey::TYPE_TEXT,
+                Survey::TYPE_TEXTAREA,
+                Survey::TYPE_SELECT,
+                Survey::TYPE_RADIO,
+                Survey::TYPE_CHECKBOX,
+            ])],
+            'description' => 'nullable|string',
+            'data' => 'nullable',
+            'survey_id' => 'exists:App\Models\Survey,id',
+        ]);
+    
+        if ($validator->fails()) {
+            // Handle validation errors
+        }
+    
+        return SurveyQuestion::create($validator->validated());
+    }
+    
 }
