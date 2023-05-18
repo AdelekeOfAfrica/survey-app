@@ -83,6 +83,7 @@
         </DisclosurePanel>
       </Disclosure>
        <router-view></router-view>  <!--this router is fetching content of the whole page underneath the header to the router  -->
+       <Notification/>
     </div>
   </template>
   
@@ -92,6 +93,7 @@
   import {useStore} from 'vuex'
   import {computed} from 'vue'
   import {useRouter} from 'vue-router'
+  import Notification from './Notification.vue'
 
   
 
@@ -113,7 +115,8 @@
     Bars3Icon,
     BellIcon,
     XMarkIcon,
-    },
+    Notification
+},
     setup () {
        const store = useStore();// this is created to access the store content//
        const router = useRouter(); //this is used for redirection
