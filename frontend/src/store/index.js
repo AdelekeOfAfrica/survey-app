@@ -17,6 +17,7 @@ const store = createStore({
         },
         surveys:{
             loading:false,
+            links:[],
             data:[]
         },
         questionTypes:["text","select","radio","checkbox","textarea"],
@@ -65,13 +66,30 @@ const store = createStore({
                 return response
             }, 
 
-            getSurveys({commit}){
-                commit('setSurveysLoading',true)
-                return axiosClient.get(`/survey`).then((res)=>{
-                    commit('setSurveysLoading',false)
-                    commit('setSurveys',res.data)
-                    return res;
+            getSurveys({ commit }, {url = null} = {}) {
+                commit('setSurveysLoading', true)
+                url = url || `/survey`;
+                return axiosClient.get(url).then((res) => {
+                  commit('setSurveysLoading', false)
+                  commit("setSurveys", res.data);
+                  return res;
+                });
+            },
+
+            getSurveyBySlug({commit}, slug) {
+                commit("setCurrentSurveyLoading", true)
+                return axiosClient.get(`/survey-by-slug/${slug}`)
+                .then((res) =>{
+                    commit ("setCurrentSurvey", res.data)
+                    commit('setCurrentSurveyLoading', false)
+                    return res
+                }) .catch((err) =>{
+                    commit("setCurrentSurveyLoading", false)
+                    throw err
                 })
+            },
+            saveSurveyAnswer({commit}, {surveyId, answers}){
+                return axiosClient.post(`/survey/${surveyId}/answer`,{answers})
             },
       
         register({ commit },user) {
@@ -111,8 +129,10 @@ const store = createStore({
         setCurrentSurvey:(state, survey)=>{
             state.currentSurvey.data= survey.data
         },
-        setSurveys:(state,survey) => {
-            state.surveys.data = survey.data
+        setSurveys:(state,surveys) => {
+            state.surveys.data = surveys.data
+            state.surveys.links = surveys.meta.links
+
         },
         logout: (state) =>{ //this function is to change the state of user and token to empty 
             state.user.data = {};
