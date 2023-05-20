@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SurveyAnswer;
 use App\Models\SurveyQuestion;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -35,6 +36,10 @@ class Survey extends Model
 
     public function questions(){
         return $this->hasMany(SurveyQuestion::class); //this means it a survey has many questions
+    }
+
+    public function answers(){
+        return $this->hasMany(SurveyAnswer::class); // this means that a survey has many answers
     }
 
 

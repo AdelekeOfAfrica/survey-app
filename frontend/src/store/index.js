@@ -9,6 +9,10 @@ const store = createStore({
             data:{},
             token:sessionStorage.getItem('TOKEN') //token will be saved in a session storage and we wont be logged out 
         },
+        dashboard:{
+            loading:false,
+            data:{}
+        },
         currentSurvey:{
             loading:false,
             data:{
@@ -29,6 +33,26 @@ const store = createStore({
     },
     getters:{},
     actions:{
+        getUser({commit}) {
+            return axiosClient.get('/user')
+            .then(res => {
+              console.log(res);
+              commit('setUser', res.data)
+            })
+          },
+        getDashboardData({commit }){
+            commit('dashboardLoading', true)
+            return axiosClient.get(`/dashboard`)
+            .then((res)=>{
+                commit('dashboardLoading', false)
+                commit('setDashboardData', res.data)
+                return res
+            })
+            .catch(error => {
+                commit('dashboardLoading',false)
+                return error
+            })
+        },
         deleteSurvey({}, id){
             return axiosClient.delete(`/survey/${id}`)
     },
@@ -92,22 +116,22 @@ const store = createStore({
                 return axiosClient.post(`/survey/${surveyId}/answer`,{answers})
             },
       
-        register({ commit },user) {
-            return axiosClient.post('/register',user)
-            .then(({data})=> {
-                commit('setUser',data)
-                return data
-            })
-        },
-        login({commit},user){
-            return axiosClient.post('/login',user)
-           
-            .then(({data})=> {
-                commit('setUser',data) //data is the result being fetched 
-                return data
-            })
-
-        },
+            register({commit}, user) {
+                return axiosClient.post('/register', user)
+                  .then(({data}) => {
+                    commit('setUser', data.user);
+                    commit('setToken', data.token)
+                    return data;
+                  })
+              },
+            login({commit}, user) {
+                return axiosClient.post('/login', user)
+                .then(({data}) => {
+                    commit('setUser', data.user);
+                    commit('setToken', data.token)
+                    return data;
+                })
+            },
         logout({commit}){
             return axiosClient.post('/logout')
 
@@ -118,6 +142,12 @@ const store = createStore({
         }
     },
     mutations:{ 
+        dashboardLoading:(state, loading)=>{
+            state.dashboard.loading = loading 
+        },
+        setDashboardData:(state, data)=>{
+            state.dashboard.data = data 
+        },
         setCurrentSurveyLoading:(state,loading) =>{
             state.currentSurvey.loading = loading
 
@@ -137,13 +167,16 @@ const store = createStore({
         logout: (state) =>{ //this function is to change the state of user and token to empty 
             state.user.data = {};
             state.user.token = null;
+            sessionStorage.removeItem("TOKEN");
         },
-        setUser:(state, userData) =>{ //this function is to assigned data received from backend to the frontend
-            state.user.data = userData.data
-            state.user.token = userData.token
-            sessionStorage.setItem('TOKEN',userData.token)
+        setUser: (state, user) => {
+            state.user.data = user;
+          },
 
-        },
+        setToken: (state, token) => {
+            state.user.token = token;
+            sessionStorage.setItem('TOKEN', token);
+          },
 
         notify:(state, {message, type}) => {
             state.notification.show = true;
