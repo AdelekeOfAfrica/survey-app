@@ -7,50 +7,116 @@ use App\Models\User;
 use App\Models\Survey;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Http\Requests\StoreSurveyRequest;
 
 class createSurveyTest extends TestCase
 {
     /**
      * A basic feature test example.
      */
-    // public function test_example(): void
-    // {
-    //     $response = $this->get('/');
+ 
 
-    //     $response->assertStatus(200);
-    // }
+     public function testCreateSurveyWithTextOption()
+     {
+         $user = User::where('email', 'adelekeofafrica@gmail.com')->first();
+     
+         // Login the user
+         $this->actingAs($user);
+     
+         // Create a survey for the authenticated user
+         $surveyData = [
+             'title' => 'Test Survey',
+             'user_id' => $user->id,
+             'status' => 1,
+             'description' => 'This is a test survey',
+             'expiry_date' => '2023-05-31',
+             'questions' => [
+                 [
+                     'id' => '13',
+                     'type' => 'text',
+                     'question' => 'This is a test question',
+                     'description' => 'This is a test question description',
+                     'data'=>[],
+                 ]
+             ]
+         ];
+     
+         // Submit the survey form
+         $response = $this->post('/api/survey', $surveyData);
+     
+         // Assert that the response was successful
+         $response->assertStatus(201);
+     
+         // Assert that the survey was saved to the database
+         $this->assertDatabaseHas('surveys', [
+             'title' => 'Test Survey',
+         ]);
+     }
 
-    public function test_survey_save()
-    {
-        // create a user to authenticate with
-        $user = User::factory()->create([
-            'email' => 'tintinki0o000opnodo0@example.com',
-            'password' => bcrypt('password')
-        ]);
-    
-        // login the user
+     public function testCreateSurveyWithcheckboxOption()
+     {
+         $user = User::where('email', 'adelekeofafrica@gmail.com')->first();
+     
+         // Login the user
+         $this->actingAs($user);
+     
+         // Create a survey for the authenticated user
+         $surveyData = [
+             'title' => 'Test Survey',
+             'user_id' => $user->id,
+             'status' => 1,
+             'description' => 'This is a test survey',
+             'expiry_date' => '2023-05-31',
+             'questions' => [
+                 [
+                     'id' => '13',
+                     'type' => 'text',
+                     'question' => 'This is a test question',
+                     'description' => 'This is a test question description',
+                     'data'=>[
+                        'options'=>[
+                            "uuid"=>"9jdfddas7-jhgowng09",
+                            "text"=>"testsurvey"
+                        ]
+                     ],
+                 ]
+             ]
+         ];
+     
+         // Submit the survey form
+         $response = $this->post('/api/survey', $surveyData);
+     
+         // Assert that the response was successful
+         $response->assertStatus(201);
+     
+         // Assert that the survey was saved to the database
+         $this->assertDatabaseHas('surveys', [
+             'title' => 'Test Survey',
+         ]);
+     }
+     
+     public function testGetSurvey(){
+        $user = User::where('email','adelekeofafrica@gmail.com')->first();
         $this->actingAs($user);
-    
-        // create a survey for the authenticated user
-        $survey = Survey::create([
-            'title' => 'Test ksdfbSurvey',
-            'user_id'=>"1",
-            // 'image' => 'data:image/png;base64,iVBORw0KGg...',
-            'status' => 1,
-            'description' => 'This is a test survey',
-            'expiry_date' => '2023-05-31',
-        ]);
-    
-        // submit the survey form
-        $response = $this->post('/api/survey', $survey->toArray());
-    
-        // assert that the response was successful
-        $response->assertStatus(201);
-    
-        // assert that the survey was saved to the database
-        $this->assertDatabaseHas('surveys', [
-            'title' => 'Test Survey',    
-        ]);
-    }
+
+        $response= $this->get('/api/survey');
+        $response->assertStatus(200);
+     }
+
+     public function testGetSurveyById()
+     {
+         $user = User::where('email', 'adelekeofafrica@gmail.com')->first();
+         $this->actingAs($user);
+     
+         $surveyId = 1; 
+     
+         $response = $this->get('/api/survey/' . $surveyId);
+     
+        //  dd($response->getContent()); // Debug the response content
+     
+         $response->assertStatus(200);
+     }
+     
+     
     
 }
